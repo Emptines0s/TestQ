@@ -1,4 +1,4 @@
-import models
+from models import Base, UserTest, User, test_question, Test, Question, Answer
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -11,11 +11,11 @@ class Database:
 
     # создать все таблицы
     def create_tables(self):
-        models.Base.metadata.create_all(self.engine)
+        Base.metadata.create_all(self.engine)
 
     # удалить все таблицы
     def delete_tables(self):
-        models.Base.metadata.drop_all(self.engine)
+        Base.metadata.drop_all(self.engine)
 
     # экспортировать данные таблиц БД в файлы json
     def export_data(self, table_list, file_path='export', file_name='export_file'):
@@ -107,6 +107,3 @@ class Database:
         except Exception as e:
             print(e)
         return dataframe
-
-
-database = Database()

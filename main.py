@@ -1,12 +1,47 @@
 import sys
 
 import database_orm as db
-from LoginWindow import LoginWindow
 
 from PyQt5.QtWidgets import QApplication, QListWidgetItem, QWidget, QDialog, QListWidget, QTableWidgetItem
 from PyQt5.uic import loadUi
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
+
+
+# Окно формы входа
+class LoginWindow(QWidget):
+    def __init__(self):
+        super(LoginWindow, self).__init__()
+
+        loadUi('login_window.ui', self)
+
+        self.pushButton_2.clicked.connect(self.go_to_main_window)
+        self.pushButton.clicked.connect(self.create_account)
+
+        self.show()
+
+    def go_to_main_window(self):
+        login = self.lineEdit.text()
+        password = self.lineEdit_2.text()
+        user_data = database.fetch_item_data(db.User.user_id,
+                                             db.User.user_password,
+                                             db.User.user_level,
+                                             attribute=db.User.user_login,
+                                             value=login)
+        print(user_data)
+        if len(user_data) == 1:
+            if user_data[0]['user_password'] == password:
+                self.close()
+                self.main_window = MainWindow(user_id=user_data[0]['user_id'],
+                                              user_level=user_data[0]['user_level'])
+
+    def create_account(self):
+        login = self.lineEdit.text()
+        password = self.lineEdit_2.text()
+        data = {'user_login': login,
+                'user_password': password,
+                'user_level': 'common'}
+        database.add_item(data=data, table_name='user')
 
 
 # Виджет на основе QListWidget с методами drag and drop для импорта пользовательских пакетов в формате json
@@ -601,7 +636,8 @@ class TestWindow(QWidget):
 
 
 if __name__ == "__main__":
-    db.database.create_tables()
+    database = db.Database()
+    database.create_tables()
     app = QApplication(sys.argv)
     login_window = LoginWindow()
     app.exec()

@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget
+from PyQt5 import QtGui
 from PyQt5.uic import loadUi
 import database_orm as db
 

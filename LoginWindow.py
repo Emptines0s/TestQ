@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
-from database_orm import database
+import database_orm as db
 
 
 class LoginWindow(QWidget):
@@ -17,11 +17,12 @@ class LoginWindow(QWidget):
     def go_to_main_window(self):
         login = self.lineEdit.text()
         password = self.lineEdit_2.text()
-        user_data = db.database.fetch_item_data(db.models.User.user_id,
-                                                db.models.User.user_password,
-                                                db.models.User.user_level,
-                                                attribute=db.models.User.user_login,
+        user_data = db.database.fetch_item_data(db.User.user_id,
+                                                db.User.user_password,
+                                                db.User.user_level,
+                                                attribute=db.User.user_login,
                                                 value=login)
+        print(user_data)
         if len(user_data) == 1:
             if user_data[0]['user_password'] == password:
                 self.close()
